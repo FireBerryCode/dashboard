@@ -30,7 +30,20 @@ map.update_layout(
                 lon=-7.0271794)},
 )
 
-layout = html.Div([
+big_map = go.Figure(go.Scattermapbox(
+    lat=["42.2512652"], lon=["-7.0271794"],
+    marker={"size": 15, "color": colors["text"]})
+)
+big_map.update_layout(
+    mapbox={"style": "stamen-terrain",
+            "zoom": 12,
+            "center": go.layout.mapbox.Center(
+                lat=42.2512652,
+                lon=-7.0271794)},
+
+)
+
+monitorizacion = html.Div([
     html.Div(
         html.Img(src=svg, width="500"), style={"textAlign": "center"}),
 
@@ -41,6 +54,7 @@ layout = html.Div([
             "color": colors["text"]
         }
     ),
+    html.Hr(),
 
     dcc.Graph(
         id="grafico-temperatura",
@@ -132,7 +146,70 @@ layout = html.Div([
         interval=10000,
         n_intervals=0
     ),
-], className="content")
+])
+
+alertas = html.Div([
+    html.Div(
+        html.Img(src=svg, width="500"), style={"textAlign": "center"}),
+
+    html.Div(
+        children="Alarmas",
+        style={
+            "textAlign": "center",
+            "color": colors["text"]
+        }
+    ),
+    html.Hr(),
+    dbc.Row([dbc.Col(daq.Knob(
+        id='alarm_temp',
+        min=0,
+        max=10,
+        value=8,
+        color=colors["other"],
+        label={"label": "Temperatura",
+               "style": {"color": colors["text"]}}
+    )), dbc.Col(daq.Knob(
+        id='alarm_flame',
+        min=0,
+        max=10,
+        value=8,
+        color=colors["other"],
+        label={"label": "Chama",
+               "style": {"color": colors["text"]}}
+    )), dbc.Col(daq.Knob(
+        id='alarm_lum',
+        min=0,
+        max=10,
+        value=8,
+        color=colors["other"],
+        label={"label": "Luminosidade",
+               "style": {"color": colors["text"]}}
+    ))]),
+    dbc.Row([dbc.Col(daq.Knob(
+        id='alarm_hum',
+        min=0,
+        max=10,
+        value=8,
+        color=colors["other"],
+        label={"label": "Humidade",
+               "style": {"color": colors["text"]}}
+    )), dbc.Col(daq.Knob(
+        id='alarm_mq7',
+        min=0,
+        max=10,
+        value=8,
+        color=colors["other"],
+        label={"label": "MQ-7",
+               "style": {"color": colors["text"]}}
+    )), dbc.Col(daq.Knob(
+        id='alarm_mq2',
+        min=0,
+        max=10,
+        value=8,
+        color=colors["other"],
+        label={"label": "MQ-2",
+               "style": {"color": colors["text"]}}
+    ))])])
 
 sidebar = html.Div(
     [
@@ -151,6 +228,16 @@ sidebar = html.Div(
                     [html.Span("Monitorización")],
                     href="/",
                     active="exact",
+                ),
+                dbc.NavLink(
+                    [html.Span("Alarmas")],
+                    href="/alarmas",
+                    active="exact",
+                ),
+                dbc.NavLink(
+                    [html.Span("Mapa")],
+                    href="/mapa",
+                    active="exact",
                 )
             ],
             vertical=True,
@@ -160,4 +247,23 @@ sidebar = html.Div(
     className="sidebar",
 )
 
+mapa = html.Div([html.Div(
+        html.Img(src=svg, width="500"), style={"textAlign": "center"}),
+
+    html.Div(
+        children="Mapa",
+        style={
+            "textAlign": "center",
+            "color": colors["text"]
+        }
+    ),
+    html.Hr(),
+    dcc.Graph(
+            # px.scatter_mapbox(lat=["42.2512652"], lon=["-7.0271794"], zoom= 12,mapbox_style="stamen-terrain")
+            figure=big_map,
+            responsive=True,
+            style={
+                "height":900
+            }
+        )])
 

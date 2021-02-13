@@ -103,3 +103,5 @@ def update_temp_graph(n):
 
     return fig, values["temperatura"], values["llama"], round(values["humedad"], 2), round(values["mq7"], 2), round(values["mq2"], 2), values["tsl"]
 
+
+

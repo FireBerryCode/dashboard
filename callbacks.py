@@ -47,8 +47,6 @@ def update_temp_graph(n):
     tsl = [t for _, t in sorted(zip(X, TSL))]
     ts = sorted(X)
 
-    print("temp", temp)
-    print("ts", ts)
     fig = make_subplots(
         rows=3, cols=2,
         shared_xaxes=True,

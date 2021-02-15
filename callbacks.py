@@ -1,11 +1,13 @@
-from app import app
+from app import app, Users, Users_tbl, engine
 from collections import deque
 from dash.dependencies import Input, Output, State
 from plotly.subplots import make_subplots
 from helpers import get_events
 import plotly.graph_objects as go
 from helpers import colors
-
+from werkzeug.security import generate_password_hash, check_password_hash
+import dash_core_components as dcc
+from flask_login import login_user
 
 X = deque(maxlen=15)
 T = deque(maxlen=15)
@@ -24,7 +26,7 @@ TSL = deque(maxlen=15)
     Output("mq7sensor", "value"),
     Output("mq2sensor", "value"),
     Output("tslsensor", "value"),
-    Input("interval-component", "n_intervals"))
+    [Input("interval-component", "n_intervals")])
 def update_temp_graph(n):
 
     df = get_events()
@@ -104,4 +106,39 @@ def update_temp_graph(n):
     return fig, values["temperatura"], values["llama"], round(values["humedad"], 2), round(values["mq7"], 2), round(values["mq2"], 2), values["tsl"]
 
 
+@app.callback(
+    Output("registersuccess", "children"),
+    [Input("registerbutton", "n_clicks")],
+    [State("registerusername", "value"),
+    State("registerpassword", "value"),
+    State("registerpassword2", "value"),
+    State("registeremail", "value")]
+)
+def insert_users(n_clicks, un, pw, pw2, em):
+    hashed_password = generate_password_hash(pw, method='sha256')
+    if un is not None and pw is not None and em is not None:
+        ins = Users_tbl.insert().values(username=un,
+        password=hashed_password, email=em)
+        conn = engine.connect()
+        conn.execute(ins)
+        conn.close()
+        #Retorno un botón para ir a pantalla del login e un mensaxe de exito
+        return (dcc.Link("Rexistro completado, prema aquí para iniciar sesión.", href="/login"))
 
+
+@app.callback(
+    Output("url_login", "pathname"),
+    [Input("loginbutton", "n_clicks")],
+    [State("usernamelogin", "value"),
+    State("passwordlogin", "value")]
+)
+def login(n_clicks, un, pw):
+    user = Users.query.filter_by(username=un).first()
+    if user:
+        if check_password_hash(user.password, pw):
+            login_user(user)
+            return '/'
+        else:
+            pass
+    else:
+        pass

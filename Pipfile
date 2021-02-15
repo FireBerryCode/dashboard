@@ -10,6 +10,11 @@ google-cloud-pubsub = "*"
 dash-daq = "*"
 dash-bootstrap-components = "*"
 dash-auth = "*"
+sqlalchemy = "*"
+flask-sqlalchemy = "*"
+flask-login = "*"
+werkzeug = "*"
+configparser = "*"
 
 [dev-packages]
 pylint = "*"

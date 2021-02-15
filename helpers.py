@@ -1,7 +1,9 @@
+from app import app
 from google.cloud import pubsub
 import json
 from datetime import datetime
 import pandas as pd
+
 
 
 def get_events():
@@ -37,3 +39,5 @@ colors = {
     "background": "#FDFFFC",
     "text": "#2E6171",
     "other": "#DE6449"}
+
+

@@ -246,7 +246,8 @@ sidebar = html.Div(
             ],
             vertical=True,
             pills=True
-        )
+        ),
+        html.Div([dcc.Link("Cerrar sesión", href="/logout"), html.Br(), html.Br()], className="sidebar-footer")
     ],
     className="sidebar"
 )
@@ -374,6 +375,32 @@ register = dbc.Container([
                 html.Br(),
                 html.Div(id='registersuccess')
             ], className='form-group',),
+        ]),
+    ]),
+], className='jumbotron')
+
+
+logout = dbc.Container([
+    html.Br(),
+    dbc.Container([
+        html.Div([
+            dbc.Container([
+                html.Img(
+                    src=svg,
+                    className='center'
+                ),
+                html.Div(
+                    children="Sesión cerrada.",
+                    style={
+                        "textAlign": "center",
+                        "color": colors["text"]
+                    }
+                ),
+                html.Br(),
+                html.Br(),
+                dcc.Link("Se desexa iniciar sesión prema aquí.", href="/login")
+                ]
+            ),
         ]),
     ]),
 ], className='jumbotron')

@@ -52,6 +52,8 @@ db.init_app(server)
 login_manager = LoginManager()
 #This provides default implementations for the methods that Flask-#Login expects user objects to have
 login_manager.init_app(server)
+login_manager.login_view = '/login'
+
 class Users(UserMixin, Users):
     pass
 

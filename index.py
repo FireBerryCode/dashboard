@@ -6,7 +6,7 @@ from app import app
 from layouts import monitorizacion, alertas, mapa, login, register, sidebar, logout
 import callbacks
 from helpers import colors
-from flask_login import current_user
+from flask_login import current_user, logout_user
 
 
 

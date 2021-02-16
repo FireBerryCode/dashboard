@@ -115,15 +115,19 @@ def update_temp_graph(n):
     State("registeremail", "value")]
 )
 def insert_users(n_clicks, un, pw, pw2, em):
-    hashed_password = generate_password_hash(pw, method='sha256')
-    if un is not None and pw is not None and em is not None:
-        ins = Users_tbl.insert().values(username=un,
-        password=hashed_password, email=em)
-        conn = engine.connect()
-        conn.execute(ins)
-        conn.close()
-        #Retorno un botón para ir a pantalla del login e un mensaxe de exito
-        return (dcc.Link("Rexistro completado, prema aquí para iniciar sesión.", href="/login"))
+    if pw == pw2:
+        hashed_password = generate_password_hash(pw, method='sha256')
+        if un is not None and pw is not None and em is not None:
+            ins = Users_tbl.insert().values(username=un,
+            password=hashed_password, email=em)
+            conn = engine.connect()
+            conn.execute(ins)
+            conn.close()
+            #Retorno un botón para ir a pantalla del login e un mensaxe de exito
+            return (dcc.Link("Rexistro completado, prema aquí para iniciar sesión.", href="/login"))
+    
+    else:
+        return html.Div("Os contrasinais non coinciden.")
 
 
 @app.callback(

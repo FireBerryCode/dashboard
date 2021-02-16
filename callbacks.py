@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 from helpers import colors
 from werkzeug.security import generate_password_hash, check_password_hash
 import dash_core_components as dcc
+import dash_html_components as html
 from flask_login import login_user
 
 X = deque(maxlen=15)

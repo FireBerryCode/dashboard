@@ -246,9 +246,10 @@ sidebar = html.Div(
             ],
             vertical=True,
             pills=True
-        )
+        ),
+        html.Div([dcc.Link("Cerrar sesión", href="/logout"), html.Br(), html.Br()], className="sidebar-footer")
     ],
-    className="sidebar",
+    className="sidebar"
 )
 
 mapa = html.Div([html.Div(
@@ -259,8 +260,7 @@ mapa = html.Div([html.Div(
         style={
             "textAlign": "center",
             "color": colors["text"]
-        }
-),
+        }),
     html.Hr(),
     dcc.Graph(
     # px.scatter_mapbox(lat=["42.2512652"], lon=["-7.0271794"], zoom= 12,mapbox_style="stamen-terrain")
@@ -270,3 +270,137 @@ mapa = html.Div([html.Div(
         "height": 900
     }
 )])
+
+login = dbc.Container([dcc.Location(id='url_login', refresh=True),
+    html.Br(),
+    dbc.Container([
+        html.Div([
+            dbc.Container(
+                html.Img(
+                    src=svg,
+                    className='center'
+                ),
+            ),
+            dbc.Container(children=[
+                dcc.Input(
+                    placeholder='Introduza o seu nome de usuario',
+                    type='text',
+                    id='usernamelogin',
+                    className='form-control',
+                    n_submit=0,
+                ),
+                html.Br(),
+                dcc.Input(
+                    placeholder='Introduza o seu contrasinal',
+                    type='password',
+                    id='passwordlogin',
+                    className='form-control',
+                    n_submit=0,
+                ),
+                html.Br(),
+                html.Button(
+                    children='Iniciar sesión',
+                    n_clicks=0,
+                    type='submit',
+                    id='loginbutton',
+                    className='btn btn-primary btn-lg'
+                ),
+                html.Br(),
+                html.Br(),
+                dcc.Link(
+                    'Se non ten usuario prema aquí para rexistrarse', href='/register')
+            ], className='form-group'),
+        ]),
+    ]),
+], className='jumbotron')
+
+register = dbc.Container([
+    html.Br(),
+    dbc.Container([
+        html.Div([
+            dbc.Container([
+                html.Img(
+                    src=svg,
+                    className='center'
+                ),
+                html.Div(
+                    children="Rexistro de usuario",
+                    style={
+                        "textAlign": "center",
+                        "color": colors["text"]
+                    }
+                ),
+                html.Br(), html.Br()]
+            ),
+            dbc.Container(children=[
+                dbc.Row([dbc.Col(
+                    dcc.Input(
+                        placeholder='Introduza un nome de usuario',
+                        type='text',
+                        id='registerusername',
+                        className='form-control',
+                        n_submit=0,
+                    )), dbc.Col(
+                    dcc.Input(
+                        placeholder='Introduza un correo electrónico',
+                        type='text',
+                        id='registeremail',
+                        className='form-control',
+                        n_submit=0,
+                    ))]),
+                html.Br(),
+                dbc.Row([dbc.Col(
+                    dcc.Input(
+                        placeholder='Introduza un contrasinal',
+                        type='password',
+                        id='registerpassword',
+                        className='form-control',
+                        n_submit=0,
+                    )), dbc.Col(
+                    dcc.Input(
+                        placeholder='Repita o contrasinal',
+                        type='password',
+                        id='registerpassword2',
+                        className='form-control',
+                        n_submit=0,
+                    ))]),
+                html.Br(),
+                html.Button(
+                    children='Rexistrarse',
+                    n_clicks=0,
+                    type='submit',
+                    id='registerbutton',
+                    className='btn btn-primary btn-lg'
+                ),
+                html.Br(),
+                html.Div(id='registersuccess')
+            ], className='form-group',),
+        ]),
+    ]),
+], className='jumbotron')
+
+
+logout = dbc.Container([
+    html.Br(),
+    dbc.Container([
+        html.Div([
+            dbc.Container([
+                html.Img(
+                    src=svg,
+                    className='center'
+                ),
+                html.Div(
+                    children="Sesión cerrada.",
+                    style={
+                        "textAlign": "center",
+                        "color": colors["text"]
+                    }
+                ),
+                html.Br(),
+                html.Br(),
+                dcc.Link("Se desexa iniciar sesión prema aquí.", href="/login")
+                ]
+            ),
+        ]),
+    ]),
+], className='jumbotron')

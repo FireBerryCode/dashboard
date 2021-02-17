@@ -60,6 +60,12 @@
   transition: opacity 0.1s ease-in-out;
 }
 
+.sidebar-footer {
+  bottom: 0;
+  width: 100%;
+  position: absolute;
+}
+
 /* reveal the header when the sidebar is toggled */
 .sidebar:hover .sidebar-header h2 {
   opacity: 1;

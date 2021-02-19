@@ -7,9 +7,11 @@ from flask_login import login_user, logout_user, current_user, LoginManager, Use
 
 
 
-conn = sqlite3.connect('data.sqlite')
+# conn = sqlite3.connect('data.sqlite')
 #connect to the database
-engine = create_engine('sqlite:///data.sqlite')
+# engine = create_engine('sqlite:///data.sqlite')
+engine = create_engine('mysql+pymysql://root:smartenergyassets@127.0.0.1/users')
+
 db = SQLAlchemy()
 #class for the table Users
 class Users(db.Model):
@@ -25,6 +27,6 @@ def create_users_table():
 create_users_table()
 
 import pandas as pd
-c = conn.cursor()
-df = pd.read_sql('select * from users', conn)
-df
+#c = conn.cursor()
+#df = pd.read_sql('select * from users', conn)
+#df

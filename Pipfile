@@ -15,6 +15,7 @@ flask-sqlalchemy = "*"
 flask-login = "*"
 werkzeug = "*"
 configparser = "*"
+pymysql = "*"
 
 [dev-packages]
 pylint = "*"

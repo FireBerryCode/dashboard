@@ -26,8 +26,8 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 warnings.filterwarnings("ignore")
 #connect to SQLite database
-conn = sqlite3.connect('data.sqlite')
-engine = create_engine('sqlite:///data.sqlite')
+#conn = sqlite3.connect('data.sqlite')
+engine = create_engine('mysql+pymysql://root:smartenergyassets@127.0.0.1/users')
 db = SQLAlchemy()
 
 config = configparser.ConfigParser()
@@ -44,7 +44,7 @@ server = app.server
 #Secret Key is used for user sessions
 server.config.update(
     SECRET_KEY=os.urandom(12),
-    SQLALCHEMY_DATABASE_URI='sqlite:///data.sqlite',
+    SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:smartenergyassets@127.0.0.1/users',
     SQLALCHEMY_TRACK_MODIFICATIONS=False
 )
 db.init_app(server)

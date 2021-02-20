@@ -1,4 +1,4 @@
-from app import app
+from app import app, dispositivos_dropdown_list
 import base64
 import plotly.graph_objects as go
 import dash_html_components as html
@@ -6,6 +6,7 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_daq as daq
 from helpers import colors
+from datetime import date
 
 
 svg_logo = "../logos/FIREBERRY_LOGO_AZUL_IMAGOTIPO.svg"
@@ -215,6 +216,57 @@ alertas = html.Div([
                    "style": {"color": colors["text"]}}
         ))])])
 
+historico = html.Div([
+    html.Div(
+        html.Img(src=svg, width="500"), style={"textAlign": "center"}),
+
+    html.Div(
+        children="Histórico de datos",
+        style={
+            "textAlign": "center",
+            "color": colors["text"]
+        }
+    ),
+    html.Hr(),
+    html.Div([
+        dcc.DatePickerRange(
+            id="rango-historico",
+        end_date=date.today(),
+        display_format='MM Do, YY',
+        start_date_placeholder_text='Do MMM, YY',
+        style={'margin-right': '2em',
+                "margin-left": "2em"}
+    ),
+    dcc.Dropdown(
+        id="dispositivo-historico",
+        options=dispositivos_dropdown_list,
+        placeholder='Seleccione un punto de medida',
+        style=dict(
+                    width='40%',
+                    display='inline-block',
+                    verticalAlign="middle",
+                )
+    ),
+    html.Button('Consultar', id='consultar-historico', n_clicks=0),
+    ], style=dict(display='flex')),
+    html.Br(),
+    dcc.Tabs(id='tabs-historico', value='tab-temp', children=[
+        dcc.Tab(label='Temperatura', value='tab-temp'),
+        dcc.Tab(label='Humidade', value='tab-hum'),
+        dcc.Tab(label="Chama", value="tab-fl"),
+        dcc.Tab(label="MQ-7", value="tab-mq7"),
+        dcc.Tab(label="MQ-2", value="tab-mq2"),
+        dcc.Tab(label="Luminosidade", value="tab-lum")
+    ]),
+    html.Div(id="grafico-hist"),
+    # dcc.Graph(
+    #     id="grafico-hist",
+    #     animate=True
+    # ),
+    html.Div(id='datos-historico', style={'display': 'none'})
+
+])
+
 sidebar = html.Div(
     [
         html.Div(
@@ -242,12 +294,18 @@ sidebar = html.Div(
                     [html.Span("Mapa")],
                     href="/mapa",
                     active="exact",
+                ),
+                dbc.NavLink(
+                    [html.Span("Historico")],
+                    href="/historico",
+                    active="exact",
                 )
             ],
             vertical=True,
             pills=True
         ),
-        html.Div([dcc.Link("Cerrar sesión", href="/logout"), html.Br(), html.Br()], className="sidebar-footer")
+        html.Div([dcc.Link("Cerrar sesión", href="/logout"),
+                  html.Br(), html.Br()], className="sidebar-footer")
     ],
     className="sidebar"
 )
@@ -272,47 +330,47 @@ mapa = html.Div([html.Div(
 )])
 
 login = dbc.Container([dcc.Location(id='url_login', refresh=True),
-    html.Br(),
-    dbc.Container([
-        html.Div([
-            dbc.Container(
-                html.Img(
-                    src=svg,
-                    className='center'
-                ),
-            ),
-            dbc.Container(children=[
-                dcc.Input(
-                    placeholder='Introduza o seu nome de usuario',
-                    type='text',
-                    id='usernamelogin',
-                    className='form-control',
-                    n_submit=0,
-                ),
-                html.Br(),
-                dcc.Input(
-                    placeholder='Introduza o seu contrasinal',
-                    type='password',
-                    id='passwordlogin',
-                    className='form-control',
-                    n_submit=0,
-                ),
-                html.Br(),
-                html.Button(
-                    children='Iniciar sesión',
-                    n_clicks=0,
-                    type='submit',
-                    id='loginbutton',
-                    className='btn btn-primary btn-lg'
-                ),
-                html.Br(),
-                html.Br(),
-                dcc.Link(
-                    'Se non ten usuario prema aquí para rexistrarse', href='/register')
-            ], className='form-group'),
-        ]),
-    ]),
-], className='jumbotron')
+                       html.Br(),
+                       dbc.Container([
+                           html.Div([
+                               dbc.Container(
+                                   html.Img(
+                                       src=svg,
+                                       className='center'
+                                   ),
+                               ),
+                               dbc.Container(children=[
+                                   dcc.Input(
+                                       placeholder='Introduza o seu nome de usuario',
+                                       type='text',
+                                       id='usernamelogin',
+                                       className='form-control',
+                                       n_submit=0,
+                                   ),
+                                   html.Br(),
+                                   dcc.Input(
+                                       placeholder='Introduza o seu contrasinal',
+                                       type='password',
+                                       id='passwordlogin',
+                                       className='form-control',
+                                       n_submit=0,
+                                   ),
+                                   html.Br(),
+                                   html.Button(
+                                       children='Iniciar sesión',
+                                       n_clicks=0,
+                                       type='submit',
+                                       id='loginbutton',
+                                       className='btn btn-primary btn-lg'
+                                   ),
+                                   html.Br(),
+                                   html.Br(),
+                                   dcc.Link(
+                                       'Se non ten usuario prema aquí para rexistrarse', href='/register')
+                               ], className='form-group'),
+                           ]),
+                       ]),
+                       ], className='jumbotron')
 
 register = dbc.Container([
     html.Br(),
@@ -399,7 +457,7 @@ logout = dbc.Container([
                 html.Br(),
                 html.Br(),
                 dcc.Link("Se desexa iniciar sesión prema aquí.", href="/login")
-                ]
+            ]
             ),
         ]),
     ]),

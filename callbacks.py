@@ -4,11 +4,13 @@ from dash.dependencies import Input, Output, State
 from plotly.subplots import make_subplots
 from helpers import get_events
 import plotly.graph_objects as go
+import plotly.express as px
 from helpers import colors
 from werkzeug.security import generate_password_hash, check_password_hash
 import dash_core_components as dcc
 import dash_html_components as html
 from flask_login import login_user
+import pandas as pd
 
 X = deque(maxlen=15)
 T = deque(maxlen=15)
@@ -108,25 +110,94 @@ def update_temp_graph(n):
 
 
 @app.callback(
+    Output("datos-historico", "children"),
+    Input("consultar-historico", "n_clicks"),
+    [State("dispositivo-historico", "value"),
+     State("rango-historico", "start_date"),
+     State("rango-historico", "end_date")]
+)
+def get_hist_data(n, device_id, start_date, end_date):
+
+    if device_id:
+        sql = f"""
+        SELECT *
+        FROM `gold-braid-297420.prueba.medidas`
+        WHERE timestamp >= "{start_date}"
+        AND timestamp <= "{end_date}"
+        AND id_dispositivo = {device_id}
+        ORDER BY timestamp
+        """
+
+        project_id = 'gold-braid-297420'
+        df = pd.read_gbq(sql, project_id=project_id, dialect='standard')
+
+        return df.to_json(date_format='iso', orient='split')
+
+
+@app.callback(Output('grafico-hist', 'children'),
+              [Input('tabs-historico', 'value'),
+              Input("datos-historico", "children")])
+def render_hist_tabs(tab, json_data):
+    df = pd.read_json(json_data, orient='split')
+
+    if tab == "tab-temp":
+        
+        fig = px.line(df, x="timestamp", y="temperatura", labels={"timestamp": "Data", "temperatura": "Temperatura"})
+
+        return dcc.Graph(figure=fig)
+
+    elif tab == "tab-hum":
+
+        fig = px.line(df, x="timestamp", y="humedad", labels={"timestamp": "Data", "humedad": "Humidade"})
+    
+        return dcc.Graph(figure=fig)
+
+    elif tab == "tab-fl":
+
+        fig = px.line(df, x="timestamp", y="llama", labels={"timestamp": "Data", "llama": "Chama"})
+
+        return dcc.Graph(figure=fig)
+        
+    elif tab == "tab-mq7":
+
+        fig = px.line(df, x="timestamp", y="mq7", labels={"timestamp": "Data", "mq7": "MQ-7"})
+
+        return dcc.Graph(figure=fig)
+
+    elif tab == "tab-mq2":
+
+        fig = px.line(df, x="timestamp", y="mq2", labels={"timestamp": "Data", "mq2": "MQ-2"})
+
+        return dcc.Graph(figure=fig)
+
+    elif tab == "tab-lum":
+
+        fig = px.line(df, x="timestamp", y="tsl", labels={"timestamp": "Data", "tsl": "Luminosidade"})
+
+        return dcc.Graph(figure=fig)
+
+
+
+@app.callback(
     Output("registersuccess", "children"),
     [Input("registerbutton", "n_clicks")],
     [State("registerusername", "value"),
-    State("registerpassword", "value"),
-    State("registerpassword2", "value"),
-    State("registeremail", "value")]
+     State("registerpassword", "value"),
+     State("registerpassword2", "value"),
+     State("registeremail", "value")]
 )
 def insert_users(n_clicks, un, pw, pw2, em):
     if pw == pw2:
         hashed_password = generate_password_hash(pw, method='sha256')
         if un is not None and pw is not None and em is not None:
             ins = Users_tbl.insert().values(username=un,
-            password=hashed_password, email=em)
+                                            password=hashed_password, email=em)
             conn = engine.connect()
             conn.execute(ins)
             conn.close()
             #Retorno un botón para ir a pantalla del login e un mensaxe de exito
             return (dcc.Link("Rexistro completado, prema aquí para iniciar sesión.", href="/login"))
-    
+
     else:
         return html.Div("Os contrasinais non coinciden.")
 
@@ -135,7 +206,7 @@ def insert_users(n_clicks, un, pw, pw2, em):
     Output("url_login", "pathname"),
     [Input("loginbutton", "n_clicks")],
     [State("usernamelogin", "value"),
-    State("passwordlogin", "value")]
+     State("passwordlogin", "value")]
 )
 def login(n_clicks, un, pw):
     user = Users.query.filter_by(username=un).first()

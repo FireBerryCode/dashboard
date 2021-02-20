@@ -6,7 +6,6 @@
 import dash
 import dash_auth
 import dash_bootstrap_components as dbc
-import plotly.express as px
 import json
 
 import warnings
@@ -17,6 +16,7 @@ import configparser
 import os
 from flask_login import LoginManager, UserMixin
 
+from google.cloud import ndb
 
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 
@@ -61,3 +61,21 @@ class Users(UserMixin, Users):
 @login_manager.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
+
+
+datastore_client = ndb.Client()
+
+class Dispositivo(ndb.Model):
+    nombre = ndb.StringProperty()
+    coordenadas = ndb.GeoPtProperty()
+
+with datastore_client.context():
+    keys = Dispositivo.query().fetch(keys_only=True)
+    dispositivos = ndb.get_multi(keys)
+
+    dispositivos_dropdown_list = []
+
+    for item in dispositivos:
+        device_dict = {"label":item.nombre, "value": item.key.id()}
+        dispositivos_dropdown_list.append(device_dict)
+

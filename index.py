@@ -3,7 +3,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 from app import app
-from layouts import monitorizacion, alertas, mapa, login, register, sidebar, logout
+from layouts import monitorizacion, alertas, mapa, historico, login, register, sidebar, logout
 import callbacks
 from helpers import colors
 from flask_login import current_user, logout_user
@@ -28,9 +28,15 @@ def render_page_content(pathname):
         else:
             return logout
 
-    elif pathname == "/mapa" and current_user.is_authenticated:
+    elif pathname == "/mapa":
         if current_user.is_authenticated:
             return sidebar, mapa
+        else:
+            return logout
+        
+    elif pathname == "/historico":
+        if current_user.is_authenticated:
+            return sidebar, historico
         else:
             return logout
 

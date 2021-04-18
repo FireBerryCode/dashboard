@@ -1,15 +1,15 @@
-from app import app, Users, Users_tbl, engine
+from app import app, Users, Users_tbl, engine, datastore_client
 from collections import deque
 from dash.dependencies import Input, Output, State
 from plotly.subplots import make_subplots
-from helpers import get_events
+from helpers import get_events, Alertas
 import plotly.graph_objects as go
 import plotly.express as px
 from helpers import colors
 from werkzeug.security import generate_password_hash, check_password_hash
 import dash_core_components as dcc
 import dash_html_components as html
-from flask_login import login_user
+from flask_login import login_user, current_user
 import pandas as pd
 
 X = deque(maxlen=15)
@@ -136,45 +136,101 @@ def get_hist_data(n, device_id, start_date, end_date):
 
 @app.callback(Output('grafico-hist', 'children'),
               [Input('tabs-historico', 'value'),
-              Input("datos-historico", "children")])
+               Input("datos-historico", "children")])
 def render_hist_tabs(tab, json_data):
     df = pd.read_json(json_data, orient='split')
 
     if tab == "tab-temp":
-        
-        fig = px.line(df, x="timestamp", y="temperatura", labels={"timestamp": "Data", "temperatura": "Temperatura"})
+
+        fig = px.line(df, x="timestamp", y="temperatura", labels={
+                      "timestamp": "Data", "temperatura": "Temperatura"})
 
         return dcc.Graph(figure=fig)
 
     elif tab == "tab-hum":
 
-        fig = px.line(df, x="timestamp", y="humedad", labels={"timestamp": "Data", "humedad": "Humidade"})
-    
+        fig = px.line(df, x="timestamp", y="humedad", labels={
+                      "timestamp": "Data", "humedad": "Humidade"})
+
         return dcc.Graph(figure=fig)
 
     elif tab == "tab-fl":
 
-        fig = px.line(df, x="timestamp", y="llama", labels={"timestamp": "Data", "llama": "Chama"})
+        fig = px.line(df, x="timestamp", y="llama", labels={
+                      "timestamp": "Data", "llama": "Chama"})
 
         return dcc.Graph(figure=fig)
-        
+
     elif tab == "tab-mq7":
 
-        fig = px.line(df, x="timestamp", y="mq7", labels={"timestamp": "Data", "mq7": "MQ-7"})
+        fig = px.line(df, x="timestamp", y="mq7", labels={
+                      "timestamp": "Data", "mq7": "MQ-7"})
 
         return dcc.Graph(figure=fig)
 
     elif tab == "tab-mq2":
 
-        fig = px.line(df, x="timestamp", y="mq2", labels={"timestamp": "Data", "mq2": "MQ-2"})
+        fig = px.line(df, x="timestamp", y="mq2", labels={
+                      "timestamp": "Data", "mq2": "MQ-2"})
 
         return dcc.Graph(figure=fig)
 
     elif tab == "tab-lum":
 
-        fig = px.line(df, x="timestamp", y="tsl", labels={"timestamp": "Data", "tsl": "Luminosidade"})
+        fig = px.line(df, x="timestamp", y="tsl", labels={
+                      "timestamp": "Data", "tsl": "Luminosidade"})
 
         return dcc.Graph(figure=fig)
+
+
+@app.callback(
+    Output("updatesuccess", "children"),
+    [Input("actualizar-alertas", "n_clicks")],
+    [State("alarm_temp", "value"),
+     State("alarm_hum", "value"),
+     State("alarm_luz", "value"),
+     State("alarm_rinf", "value"),
+     State("alarm_lux", "value"),
+     State("alarm_gas", "value"),
+     State("alarm_co2", "value"),
+     State("dispositivo-alertas", "value")]
+)
+def update_alert(n, temp, hum, luz, rinf, lux, gas, co2, device):
+    if device:
+        user = current_user.username
+
+        with datastore_client.context():
+            alerta = Alertas(
+                usuario=user,
+                id_dispositivo=device,
+                temp=temp,
+                hum=hum,
+                luz=luz,
+                rinf=rinf,
+                lux=lux,
+                gas=gas,
+                co2=co2)
+            alerta.put()
+        print(user, " ", device)
+        return(n)
+
+@app.callback(
+    [Output("alarm_temp", "value"),
+    Output("alarm_hum", "value"),
+    Output("alarm_luz", "value"),
+    Output("alarm_rinf", "value"),
+    Output("alarm_lux", "value"),
+    Output("alarm_gas", "value"),
+    Output("alarm_co2", "value")],
+    [Input("comprobar-alertas", "n_clicks")],
+    [State("dispositivo-alertas", "value")]
+)
+def alert_default(n, device):
+    if device:
+        
+        with datastore_client.context():
+            value = Alertas.query().filter(Alertas.usuario==current_user.username, Alertas.id_dispositivo==device).fetch()[0]
+            return value.temp, value.hum, value.luz, value.rinf, value.lux, value.gas, value.co2
 
 
 

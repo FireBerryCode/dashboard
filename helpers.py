@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 import pandas as pd
 
+from google.cloud import ndb
 
 
 def get_events():
@@ -41,3 +42,13 @@ colors = {
     "other": "#DE6449"}
 
 
+class Alertas(ndb.Model):
+    usuario = ndb.StringProperty()
+    id_dispositivo = ndb.IntegerProperty()
+    temp = ndb.IntegerProperty()
+    hum = ndb.IntegerProperty()
+    luz = ndb.IntegerProperty()
+    rinf = ndb.IntegerProperty()
+    lux = ndb.IntegerProperty()
+    gas = ndb.IntegerProperty()
+    co2 = ndb.IntegerProperty()

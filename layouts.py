@@ -161,60 +161,97 @@ alertas = html.Div([
         }
     ),
     html.Hr(),
-    dbc.Row([dbc.Col(daq.Knob(
-        id='alarm_temp',
-        min=0,
-        max=10,
-        value=8,
-        color=colors["other"],
-        label={"label": "Temperatura",
-               "style": {"color": colors["text"]}}
-    )),
-        dbc.Col(daq.Knob(
-            id='alarm_flame',
+    dbc.Jumbotron([dbc.Row([
+            daq.NumericInput(
+                id='alarm_temp',
+                min=0,
+                max=100,
+                value=25,
+                size=120,
+                label={"label": "Temperatura",
+                       "style": {"color": colors["text"]}},
+                style={"margin-right": "2em", "margin-left": "2em"}
+            ),
+            daq.NumericInput(
+            id='alarm_hum',
             min=0,
             max=10,
             value=8,
-            color=colors["other"],
-            label={"label": "Chama",
-                   "style": {"color": colors["text"]}}
-        )),
-        dbc.Col(daq.Knob(
-            id='alarm_lum',
+            size=120,
+            label={"label": "Humidade",
+                   "style": {"color": colors["text"]}},
+            style={"margin-right": "2em"}
+        ),
+        daq.NumericInput(
+            id='alarm_luz',
             min=0,
             max=10,
             value=8,
-            color=colors["other"],
+            size=120,
             label={"label": "Luminosidade",
-                   "style": {"color": colors["text"]}}
-        ))]),
-    dbc.Row([dbc.Col(daq.Knob(
-        id='alarm_hum',
-        min=0,
-        max=10,
-        value=8,
-        color=colors["other"],
-        label={"label": "Humidade",
-               "style": {"color": colors["text"]}}
-    )),
-        dbc.Col(daq.Knob(
-            id='alarm_mq7',
+                   "style": {"color": colors["text"]}},
+            style={"margin-right": "2em"}
+        ),
+        daq.NumericInput(
+            id='alarm_rinf',
             min=0,
             max=10,
             value=8,
-            color=colors["other"],
-            label={"label": "MQ-7",
-                   "style": {"color": colors["text"]}}
-        )),
-        dbc.Col(daq.Knob(
-            id='alarm_mq2',
-            min=0,
-            max=10,
-            value=8,
-            color=colors["other"],
-            label={"label": "MQ-2",
-                   "style": {"color": colors["text"]}}
-        ))])])
+            size=120,
+            label={"label": "Radiación Infravermella",
+                   "style": {"color": colors["text"]}},
+            style={"margin-right": "2em"}
+        ),
+        daq.NumericInput(
+                id='alarm_lux',
+                min=0,
+                max=10,
+                value=8,
+                size=120,
+                label={"label": "Lux",
+                       "style": {"color": colors["text"]}},
+                style={"margin-right": "2em"}
+            ),
+            daq.NumericInput(
+                id='alarm_gas',
+                min=0,
+                max=10,
+                value=8,
+                size=120,
+                label={"label": "Gases",
+                       "style": {"color": colors["text"]}},
+                style={"margin-right": "2em"}
+            ),
+            daq.NumericInput(
+                id='alarm_co2',
+                min=0,
+                max=10,
+                value=8,
+                size=120,
+                label={"label": "CO2",
+                       "style": {"color": colors["text"]}},
+                style={"margin-right": "2em"}
+            )])]),
+    dcc.Dropdown(
+        id="dispositivo-alertas",
+        options=dispositivos_dropdown_list,
+        placeholder='Seleccione un punto de medida',
+        style=dict(
+            width='60%',
+            display='inline-block',
+            verticalAlign="middle",
+        )
+    ),
+    html.Br(),
+    html.Br(),
+    html.Button('Establecer alertas', id='actualizar-alertas',
+                n_clicks=0, type='submit', className='btn btn-primary btn-lg',
+                style={"margin-right": "2em"}),
+    html.Button('Comprobar alertas', id='comprobar-alertas',
+                n_clicks=0, type='submit', className='btn btn-primary btn-lg',),
+    html.Div(id='updatesuccess')
+
+])
 
 historico = html.Div([
     html.Div(
@@ -231,23 +268,23 @@ historico = html.Div([
     html.Div([
         dcc.DatePickerRange(
             id="rango-historico",
-        end_date=date.today(),
-        display_format='MM Do, YY',
-        start_date_placeholder_text='Do MMM, YY',
-        style={'margin-right': '2em',
-                "margin-left": "2em"}
-    ),
-    dcc.Dropdown(
-        id="dispositivo-historico",
-        options=dispositivos_dropdown_list,
-        placeholder='Seleccione un punto de medida',
-        style=dict(
-                    width='40%',
-                    display='inline-block',
-                    verticalAlign="middle",
-                )
-    ),
-    html.Button('Consultar', id='consultar-historico', n_clicks=0),
+            end_date=date.today(),
+            display_format='MM Do, YY',
+            start_date_placeholder_text='Do MMM, YY',
+            style={'margin-right': '2em',
+                   "margin-left": "2em"}
+        ),
+        dcc.Dropdown(
+            id="dispositivo-historico",
+            options=dispositivos_dropdown_list,
+            placeholder='Seleccione un punto de medida',
+            style=dict(
+                width='40%',
+                display='inline-block',
+                verticalAlign="middle",
+            )
+        ),
+        html.Button('Consultar', id='consultar-historico', n_clicks=0),
     ], style=dict(display='flex')),
     html.Br(),
     dcc.Tabs(id='tabs-historico', value='tab-temp', children=[

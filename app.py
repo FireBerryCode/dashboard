@@ -14,7 +14,7 @@ from sqlalchemy import Table, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import configparser
 import os
-from flask_login import LoginManager, UserMixin
+from flask_login import LoginManager, UserMixin, current_user
 
 from google.cloud import ndb
 
@@ -65,6 +65,8 @@ def load_user(user_id):
 
 datastore_client = ndb.Client()
 
+
+## A continuación hacemos las llamadas pertinentes a datastore para tener tanto los dispositivos como las alertas definidas por el usuario
 class Dispositivo(ndb.Model):
     nombre = ndb.StringProperty()
     coordenadas = ndb.GeoPtProperty()

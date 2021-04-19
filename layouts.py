@@ -63,79 +63,84 @@ monitorizacion = html.Div([
     ),
     html.Div(dbc.Row([
         dbc.Col(dcc.Graph(
-            # px.scatter_mapbox(lat=["42.2512652"], lon=["-7.0271794"], zoom= 12,mapbox_style="stamen-terrain")
             figure=map
         )),
         dbc.Col([
             dbc.Row([
                 dbc.Col(html.Div(children=[
-                    daq.Thermometer(
-                        id='termometro',
+                    daq.Gauge(
+                        id="tempsensor",
+                        color={"gradient": True, "ranges": {
+                            "blue": [0, 80], "red":[80, 100]}},
                         value=0,
-                        min=0,
+                        label={"label": "Temperatura", "style": {
+                            "color": colors["text"]}},
                         max=100,
-                        style={
-                            'margin-bottom': '5%',
-                            "color": colors["text"]},
-                        color=colors["other"],
-                        label={"label": "Temperatura",
-                               "style": {"color": colors["text"]}},
-                        showCurrentValue=True,
-                        units="C"
+                        min=0
                     ),
                 ],
                 )
                 ),
                 dbc.Col(html.Div(
                     daq.Gauge(
-                        id="chamasensor",
+                        id="humsensor",
                         color={"gradient": True, "ranges": {
-                            colors["text"]: [0, 800], "red":[800, 1000]}},
+                            "blue": [0, 80], "red":[80, 100]}},
                         value=0,
-                        label={"label": "Chama", "style": {
+                        label={"label": "Humidade relativa", "style": {
                             "color": colors["text"]}},
-                        max=1000,
+                        max=100,
                         min=0
                     ),
                 )),
 
                 dbc.Col(html.Div(
-                    daq.Tank(
-                        id="tslsensor",
-                        min=0,
-                        max=20000,
+                    daq.Gauge(
+                        id="gassensor",
+                        color={"gradient": True, "ranges": {
+                            "blue": [0, 800], "red":[800, 1000]}},
                         value=0,
-                        color=colors["other"],
-                        label={"label": "Luminosidade",
-                               "style": {"color": colors["text"]}},
+                        label={"label": "Concentración de gases", "style": {
+                            "color": colors["text"]}},
+                        max=1000,
+                        min=0
                     ),
                 ))]),
             dbc.Row([
                 dbc.Col(html.Div(
-                    daq.LEDDisplay(
-                        id="humsensor",
+                    daq.Gauge(
+                        id="luzsensor",
+                        color={"gradient": True, "ranges": {
+                            "blue": [0, 800], "red":[800, 1000]}},
                         value=0,
-                        color=colors["other"],
-                        label={"label": "Humidade", "style": {
+                        label={"label": "Radiación visible", "style": {
                             "color": colors["text"]}},
+                        max=1000,
+                        min=0
                     ),
                 )),
                 dbc.Col(html.Div(
-                    daq.LEDDisplay(
-                        id="mq7sensor",
+                    daq.Gauge(
+                        id="rinfsensor",
+                        color={"gradient": True, "ranges": {
+                            "blue": [0, 800], "red":[800, 1000]}},
                         value=0,
-                        color=colors["other"],
-                        label={"label": "MQ-7",
-                               "style": {"color": colors["text"]}},
+                        label={"label": "Radiación infravermella", "style": {
+                            "color": colors["text"]}},
+                        max=1000,
+                        min=0
                     ),
                 )),
                 dbc.Col(html.Div(
-                    daq.LEDDisplay(
-                        id="mq2sensor",
+                    daq.Gauge(
+                        id="flamesensor",
+                        color={"gradient": True, "ranges": {
+                            "blue": [0, 800], "red":[800, 1000]}},
                         value=0,
-                        color=colors["other"],
-                        label={"label": "MQ-2",
-                               "style": {"color": colors["text"]}},
+                        label={"label": "Sensor de lume", "style": {
+                            "color": colors["text"]}},
+                        max=1000,
+                        min=0
                     ),
                 ))])]),
     ], justify="end")),
@@ -166,21 +171,31 @@ alertas = html.Div([
                 id='alarm_temp',
                 min=0,
                 max=100,
-                value=25,
+                value=0,
                 size=120,
                 label={"label": "Temperatura",
                        "style": {"color": colors["text"]}},
-                style={"margin-right": "2em", "margin-left": "2em"}
+                style={"margin-right": "5em"}
             ),
             daq.NumericInput(
             id='alarm_hum',
             min=0,
+            max=100,
+            value=0,
+            size=120,
+            label={"label": "Humidade relativa",
+                   "style": {"color": colors["text"]}},
+            style={"margin-right": "5em"}
+        ),
+        daq.NumericInput(
+            id='alarm_gas',
+            min=0,
             max=10,
             value=8,
             size=120,
-            label={"label": "Humidade",
+            label={"label": "Concentración de gases",
                    "style": {"color": colors["text"]}},
-            style={"margin-right": "2em"}
+            style={"margin-right": "5em"}
         ),
         daq.NumericInput(
             id='alarm_luz',
@@ -188,50 +203,30 @@ alertas = html.Div([
             max=10,
             value=8,
             size=120,
-            label={"label": "Luminosidade",
+            label={"label": "Radiación visible",
                    "style": {"color": colors["text"]}},
-            style={"margin-right": "2em"}
+            style={"margin-right": "5em"}
         ),
         daq.NumericInput(
-            id='alarm_rinf',
-            min=0,
-            max=10,
-            value=8,
-            size=120,
-            label={"label": "Radiación Infravermella",
-                   "style": {"color": colors["text"]}},
-            style={"margin-right": "2em"}
-        ),
-        daq.NumericInput(
-                id='alarm_lux',
+                id='alarm_rinf',
                 min=0,
                 max=10,
                 value=8,
                 size=120,
-                label={"label": "Lux",
+                label={"label": "Radiación infraveermella",
                        "style": {"color": colors["text"]}},
-                style={"margin-right": "2em"}
+                style={"margin-right": "5em"}
             ),
             daq.NumericInput(
-                id='alarm_gas',
+                id='alarm_flame',
                 min=0,
                 max=10,
                 value=8,
                 size=120,
-                label={"label": "Gases",
+                label={"label": "Sensor de lume",
                        "style": {"color": colors["text"]}},
-                style={"margin-right": "2em"}
-            ),
-            daq.NumericInput(
-                id='alarm_co2',
-                min=0,
-                max=10,
-                value=8,
-                size=120,
-                label={"label": "CO2",
-                       "style": {"color": colors["text"]}},
-                style={"margin-right": "2em"}
-            )])]),
+                style={"margin-right": "5em"}
+            )], justify="center")]),
     dcc.Dropdown(
         id="dispositivo-alertas",
         options=dispositivos_dropdown_list,
@@ -249,7 +244,12 @@ alertas = html.Div([
                 style={"margin-right": "2em"}),
     html.Button('Comprobar alertas', id='comprobar-alertas',
                 n_clicks=0, type='submit', className='btn btn-primary btn-lg',),
-    html.Div(id='updatesuccess')
+    html.Br(),
+    html.Br(),
+    html.Div(id='updatesuccess',
+        style={
+            "color": colors["text"]
+        })
 
 ])
 
@@ -284,16 +284,16 @@ historico = html.Div([
                 verticalAlign="middle",
             )
         ),
-        html.Button('Consultar', id='consultar-historico', n_clicks=0),
+        html.Button('Consultar', id='consultar-historico', n_clicks=0, className='btn btn-primary btn-lg'),
     ], style=dict(display='flex')),
     html.Br(),
     dcc.Tabs(id='tabs-historico', value='tab-temp', children=[
         dcc.Tab(label='Temperatura', value='tab-temp'),
-        dcc.Tab(label='Humidade', value='tab-hum'),
-        dcc.Tab(label="Chama", value="tab-fl"),
-        dcc.Tab(label="MQ-7", value="tab-mq7"),
-        dcc.Tab(label="MQ-2", value="tab-mq2"),
-        dcc.Tab(label="Luminosidade", value="tab-lum")
+        dcc.Tab(label='Humidade relativa', value='tab-hum'),
+        dcc.Tab(label="Concentración de gases", value="tab-gas"),
+        dcc.Tab(label="Radiación visible", value="tab-luz"),
+        dcc.Tab(label="Radiación infravermella", value="tab-rinf"),
+        dcc.Tab(label="Sensor de lume", value="tab-flame")
     ]),
     html.Div(id="grafico-hist"),
     # dcc.Graph(

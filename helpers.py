@@ -21,6 +21,7 @@ def get_events():
 
     data_list = []
     for msg in response.received_messages:
+        print(msg.message.data)
         datos = json.loads(msg.message.data)
         datos["timestamp"] = datetime.strptime(
             datos["timestamp"].split(".")[0], "%Y-%m-%dT%H:%M:%S")
@@ -47,8 +48,7 @@ class Alertas(ndb.Model):
     id_dispositivo = ndb.IntegerProperty()
     temp = ndb.IntegerProperty()
     hum = ndb.IntegerProperty()
+    gas = ndb.IntegerProperty()
     luz = ndb.IntegerProperty()
     rinf = ndb.IntegerProperty()
-    lux = ndb.IntegerProperty()
-    gas = ndb.IntegerProperty()
-    co2 = ndb.IntegerProperty()
+    flame = ndb.IntegerProperty()

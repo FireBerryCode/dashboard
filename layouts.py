@@ -20,7 +20,9 @@ svg_mini = 'data:image/svg+xml;base64,{}'.format(encoded_mini.decode())
 
 
 map = go.Figure(go.Scattermapbox(
-    lat=["42.2512652"], lon=["-7.0271794"],
+    lat=[item["coords"].latitude for item in dispositivos_dropdown_list],
+    lon=[item["coords"].longitude for item in dispositivos_dropdown_list],
+    text=[item["label"] for item in dispositivos_dropdown_list],
     marker={"size": 15, "color": colors["text"]})
 )
 map.update_layout(
@@ -32,7 +34,9 @@ map.update_layout(
 )
 
 big_map = go.Figure(go.Scattermapbox(
-    lat=["42.2512652"], lon=["-7.0271794"],
+    lat=[item["coords"].latitude for item in dispositivos_dropdown_list],
+    lon=[item["coords"].longitude for item in dispositivos_dropdown_list],
+    text=[item["label"] for item in dispositivos_dropdown_list],
     marker={"size": 15, "color": colors["text"]})
 )
 big_map.update_layout(

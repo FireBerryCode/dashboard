@@ -12,7 +12,7 @@ topic = "projects/gold-braid-297420/topics/gateway-telemetry"
 while True:
 
     payload = json.dumps({"timestamp": datetime.now().isoformat(), "temp": randint(0, 10), "hum": randint(
-        0, 10), "gas": randint(0, 10), "luz": randint(0, 10), "rinf": randint(0, 10), "flame": randint(0, 10)}).encode("utf-8")
+        0, 10), "gas": randint(0, 10), "luz": randint(0, 10), "rinf": randint(0, 10), "flame": randint(0, 10), "device_id": 5646488461901824}).encode("utf-8")
 
     print("""
     ------------------

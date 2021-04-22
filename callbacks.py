@@ -209,7 +209,6 @@ def update_alert(n, temp, hum, gas, luz, rinf, flame, device):
                 rinf=rinf,
                 flame=flame)
             alerta.put()
-        print(user, " ", device)
         return("Alarma actualizada con éxito!")
 
 @app.callback(

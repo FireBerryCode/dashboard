@@ -78,6 +78,6 @@ with datastore_client.context():
     dispositivos_dropdown_list = []
 
     for item in dispositivos:
-        device_dict = {"label":item.nombre, "value": item.key.id()}
+        device_dict = {"label":item.nombre, "value": item.key.id(), "coords": item.coordenadas}
         dispositivos_dropdown_list.append(device_dict)
 

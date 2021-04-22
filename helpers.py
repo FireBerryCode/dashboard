@@ -21,7 +21,6 @@ def get_events():
 
     data_list = []
     for msg in response.received_messages:
-        print(msg.message.data)
         datos = json.loads(msg.message.data)
         datos["timestamp"] = datetime.strptime(
             datos["timestamp"].split(".")[0], "%Y-%m-%dT%H:%M:%S")

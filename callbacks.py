@@ -211,7 +211,8 @@ def update_alert(n, temp, hum, gas, luz, rinf, flame, device):
                 gas=gas,
                 luz=luz,
                 rinf=rinf,
-                flame=flame)
+                flame=flame,
+                activa=True)
             alerta.put()
         return("Alarma actualizada con éxito!")
 

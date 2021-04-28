@@ -197,10 +197,14 @@ def render_hist_tabs(tab, json_data):
 def update_alert(n, temp, hum, gas, luz, rinf, flame, device):
     if device:
         user = current_user.username
+        email = current_user.email
+        phone = current_user.phone
 
         with datastore_client.context():
             alerta = Alertas(
                 usuario=user,
+                email=email,
+                telefono=phone,
                 id_dispositivo=device,
                 temp=temp,
                 hum=hum,
@@ -239,14 +243,17 @@ def alert_default(n, device):
     [State("registerusername", "value"),
      State("registerpassword", "value"),
      State("registerpassword2", "value"),
-     State("registeremail", "value")]
+     State("registeremail", "value"),
+     State("registerphone", "value")]
 )
-def insert_users(n_clicks, un, pw, pw2, em):
+def insert_users(n_clicks, un, pw, pw2, em, ph):
     if pw == pw2:
         hashed_password = generate_password_hash(pw, method='sha256')
-        if un is not None and pw is not None and em is not None:
+        if un is not None and pw is not None and em is not None and ph is not None:
             ins = Users_tbl.insert().values(username=un,
-                                            password=hashed_password, email=em)
+                                            password=hashed_password,
+                                            email=em,
+                                            phone=ph)
             conn = engine.connect()
             conn.execute(ins)
             conn.close()

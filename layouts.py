@@ -171,17 +171,17 @@ alertas = html.Div([
     ),
     html.Hr(),
     dbc.Jumbotron([dbc.Row([
-            daq.NumericInput(
-                id='alarm_temp',
-                min=0,
-                max=100,
-                value=0,
-                size=120,
-                label={"label": "Temperatura",
-                       "style": {"color": colors["text"]}},
-                style={"margin-right": "5em"}
-            ),
-            daq.NumericInput(
+        daq.NumericInput(
+            id='alarm_temp',
+            min=0,
+            max=100,
+            value=0,
+            size=120,
+            label={"label": "Temperatura",
+                   "style": {"color": colors["text"]}},
+            style={"margin-right": "5em"}
+        ),
+        daq.NumericInput(
             id='alarm_hum',
             min=0,
             max=100,
@@ -195,7 +195,7 @@ alertas = html.Div([
             id='alarm_gas',
             min=0,
             max=10,
-            value=8,
+            value=0,
             size=120,
             label={"label": "Concentración de gases",
                    "style": {"color": colors["text"]}},
@@ -205,35 +205,35 @@ alertas = html.Div([
             id='alarm_luz',
             min=0,
             max=10,
-            value=8,
+            value=0,
             size=120,
             label={"label": "Radiación visible",
                    "style": {"color": colors["text"]}},
             style={"margin-right": "5em"}
         ),
         daq.NumericInput(
-                id='alarm_rinf',
-                min=0,
-                max=10,
-                value=8,
-                size=120,
-                label={"label": "Radiación infraveermella",
-                       "style": {"color": colors["text"]}},
-                style={"margin-right": "5em"}
-            ),
-            daq.NumericInput(
-                id='alarm_flame',
-                min=0,
-                max=10,
-                value=8,
-                size=120,
-                label={"label": "Sensor de lume",
-                       "style": {"color": colors["text"]}},
-                style={"margin-right": "5em"}
-            )], justify="center")]),
+            id='alarm_rinf',
+            min=0,
+            max=10,
+            value=0,
+            size=120,
+            label={"label": "Radiación infraveermella",
+                   "style": {"color": colors["text"]}},
+            style={"margin-right": "5em"}
+        ),
+        daq.NumericInput(
+            id='alarm_flame',
+            min=0,
+            max=10,
+            value=0,
+            size=120,
+            label={"label": "Sensor de lume",
+                   "style": {"color": colors["text"]}},
+            style={"margin-right": "5em"}
+        )], justify="center")]),
     dcc.Dropdown(
         id="dispositivo-alertas",
-        options=dispositivos_dropdown_list,
+        options=[{"label": item["label"], "value": item["value"]} for item in dispositivos_dropdown_list],
         placeholder='Seleccione un punto de medida',
         style=dict(
             width='60%',
@@ -251,9 +251,9 @@ alertas = html.Div([
     html.Br(),
     html.Br(),
     html.Div(id='updatesuccess',
-        style={
-            "color": colors["text"]
-        })
+             style={
+                 "color": colors["text"]
+             })
 
 ])
 
@@ -280,7 +280,7 @@ historico = html.Div([
         ),
         dcc.Dropdown(
             id="dispositivo-historico",
-            options=dispositivos_dropdown_list,
+            options=[{"label": item["label"], "value": item["value"]} for item in dispositivos_dropdown_list],
             placeholder='Seleccione un punto de medida',
             style=dict(
                 width='40%',
@@ -288,7 +288,9 @@ historico = html.Div([
                 verticalAlign="middle",
             )
         ),
-        html.Button('Consultar', id='consultar-historico', n_clicks=0, className='btn btn-primary btn-lg'),
+        html.Div([
+        html.Button('Consultar', id='consultar-historico',
+                    n_clicks=0, className='btn btn-primary btn-lg')], style={'position': 'absolute', "right": "5em"}),
     ], style=dict(display='flex')),
     html.Br(),
     dcc.Tabs(id='tabs-historico', value='tab-temp', children=[
@@ -446,6 +448,13 @@ register = dbc.Container([
                         id='registeremail',
                         className='form-control',
                         n_submit=0,
+                    )), dbc.Col(
+                    dcc.Input(
+                        placeholder='Introduza un número de teléfono',
+                        type='text',
+                        id='registerphone',
+                        className='form-control',
+                        n_submit=0,
                     ))]),
                 html.Br(),
                 dbc.Row([dbc.Col(
@@ -462,7 +471,8 @@ register = dbc.Container([
                         id='registerpassword2',
                         className='form-control',
                         n_submit=0,
-                    ))]),
+                    )),
+                    dbc.Col()]),
                 html.Br(),
                 html.Button(
                     children='Rexistrarse',

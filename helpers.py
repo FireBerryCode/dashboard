@@ -43,7 +43,9 @@ colors = {
 
 
 class Alertas(ndb.Model):
-    usuario = ndb.StringProperty()
+    usuario = ndb.StringProperty(),
+    email = ndb.StringProperty(),
+    telefono = ndb.StringProperty(),
     id_dispositivo = ndb.IntegerProperty()
     temp = ndb.IntegerProperty()
     hum = ndb.IntegerProperty()
@@ -51,3 +53,4 @@ class Alertas(ndb.Model):
     luz = ndb.IntegerProperty()
     rinf = ndb.IntegerProperty()
     flame = ndb.IntegerProperty()
+    activa = ndb.BooleanProperty()
